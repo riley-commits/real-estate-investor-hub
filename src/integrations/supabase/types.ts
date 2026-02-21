@@ -14,13 +14,137 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      operator_projects: {
+        Row: {
+          cap_rate: number | null
+          city: string
+          created_at: string
+          deal_type: string
+          description: string
+          equity_multiple: number | null
+          highlights: string[] | null
+          hold_period: string | null
+          id: string
+          image_url: string | null
+          loan_to_value: number | null
+          location: string
+          long_description: string | null
+          min_investment: number | null
+          operator_id: string
+          project_type: string
+          projected_noi: number | null
+          purchase_price: number | null
+          raised_amount: number | null
+          state: string
+          status: string
+          target_irr: number | null
+          target_raise: number | null
+          title: string
+          total_capitalization: number | null
+          updated_at: string
+        }
+        Insert: {
+          cap_rate?: number | null
+          city?: string
+          created_at?: string
+          deal_type?: string
+          description?: string
+          equity_multiple?: number | null
+          highlights?: string[] | null
+          hold_period?: string | null
+          id?: string
+          image_url?: string | null
+          loan_to_value?: number | null
+          location?: string
+          long_description?: string | null
+          min_investment?: number | null
+          operator_id: string
+          project_type?: string
+          projected_noi?: number | null
+          purchase_price?: number | null
+          raised_amount?: number | null
+          state?: string
+          status?: string
+          target_irr?: number | null
+          target_raise?: number | null
+          title: string
+          total_capitalization?: number | null
+          updated_at?: string
+        }
+        Update: {
+          cap_rate?: number | null
+          city?: string
+          created_at?: string
+          deal_type?: string
+          description?: string
+          equity_multiple?: number | null
+          highlights?: string[] | null
+          hold_period?: string | null
+          id?: string
+          image_url?: string | null
+          loan_to_value?: number | null
+          location?: string
+          long_description?: string | null
+          min_investment?: number | null
+          operator_id?: string
+          project_type?: string
+          projected_noi?: number | null
+          purchase_price?: number | null
+          raised_amount?: number | null
+          state?: string
+          status?: string
+          target_irr?: number | null
+          target_raise?: number | null
+          title?: string
+          total_capitalization?: number | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "operator_projects_operator_id_fkey"
+            columns: ["operator_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          bio: string | null
+          company_name: string
+          created_at: string
+          id: string
+          name: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          bio?: string | null
+          company_name?: string
+          created_at?: string
+          id?: string
+          name?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          bio?: string | null
+          company_name?: string
+          created_at?: string
+          id?: string
+          name?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_my_profile_id: { Args: never; Returns: string }
     }
     Enums: {
       [_ in never]: never

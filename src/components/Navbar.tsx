@@ -1,9 +1,9 @@
 import { Link, useLocation } from "react-router-dom";
 import { Building2 } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
 
 const Navbar = () => {
-  const location = useLocation();
-  const isDetail = location.pathname !== "/";
+  const { user } = useAuth();
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 border-b border-border/40 bg-background/80 backdrop-blur-md">
@@ -30,12 +30,29 @@ const Navbar = () => {
           <a href="#" className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">
             How It Works
           </a>
-          <button className="rounded border border-gold/60 px-4 py-1.5 text-sm font-medium text-gold transition-all hover:bg-gold/10">
-            Sign In
-          </button>
-          <button className="rounded gradient-gold px-4 py-1.5 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90">
-            Get Started
-          </button>
+          {user ? (
+            <Link
+              to="/dashboard"
+              className="rounded gradient-gold px-4 py-1.5 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
+            >
+              Dashboard
+            </Link>
+          ) : (
+            <>
+              <Link
+                to="/auth"
+                className="rounded border border-gold/60 px-4 py-1.5 text-sm font-medium text-gold transition-all hover:bg-gold/10"
+              >
+                Sign In
+              </Link>
+              <Link
+                to="/auth"
+                className="rounded gradient-gold px-4 py-1.5 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
+              >
+                Get Started
+              </Link>
+            </>
+          )}
         </div>
       </div>
     </nav>
