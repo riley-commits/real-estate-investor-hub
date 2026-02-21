@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { Search, SlidersHorizontal, Building2, TrendingUp, Users, Shield } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import ProjectCard from "@/components/ProjectCard";
@@ -205,9 +206,12 @@ const Index = () => {
           <p className="mb-8 text-muted-foreground max-w-md mx-auto">
             List your investment opportunity on CrestCapital and connect with thousands of accredited investors.
           </p>
-          <button className="rounded gradient-gold px-8 py-3 text-base font-semibold text-primary-foreground shadow-gold transition-opacity hover:opacity-90">
+          <Link
+            to="/auth"
+            className="rounded gradient-gold px-8 py-3 text-base font-semibold text-primary-foreground shadow-gold transition-opacity hover:opacity-90 inline-block"
+          >
             Submit Your Deal
-          </button>
+          </Link>
         </div>
       </section>
     </div>
