@@ -60,6 +60,30 @@ This project is built with:
 - shadcn-ui
 - Tailwind CSS
 
+### Supabase integration
+
+User profiles can be stored in a Supabase database. To enable this feature:
+
+1. Create a Supabase project and add a `profiles` table with at least the
+   columns `username` (text) and `role` (text).
+2. Copy the API URL and anon key from your Supabase project's settings.
+3. Add them to a `.env` file at the repository root:
+
+```env
+VITE_SUPABASE_URL=https://your-project.supabase.co
+VITE_SUPABASE_ANON_KEY=your-anon-key
+```
+
+4. Install the Supabase client dependency:
+
+```bash
+npm install @supabase/supabase-js
+```
+
+With those steps complete, new users created via the signup form will be
+saved to Supabase as well as to localStorage. If the environment variables
+are missing the app will simply fall back to local storage for profiles.
+
 ## How can I deploy this project?
 
 Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.

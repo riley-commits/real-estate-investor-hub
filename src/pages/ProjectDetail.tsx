@@ -19,7 +19,7 @@ import { projects } from "@/data/projects";
 const statusColors: Record<string, string> = {
   Active: "bg-emerald-500/15 text-emerald-400 border-emerald-500/30",
   "Fully Funded": "bg-blue-500/15 text-blue-400 border-blue-500/30",
-  "Coming Soon": "bg-gold/15 text-gold border-gold/30",
+  "Coming Soon": "bg-blue/15 text-blue border-blue/30",
 };
 
 const MetricCard = ({
@@ -35,8 +35,8 @@ const MetricCard = ({
 }) => (
   <div className="rounded-xl border border-border bg-card p-5">
     <div className="mb-3 flex items-center gap-2">
-      <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gold/15">
-        <Icon className="h-4 w-4 text-gold" />
+      <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue/15">
+        <Icon className="h-4 w-4 text-blue" />
       </div>
       <span className="text-sm text-muted-foreground">{label}</span>
     </div>
@@ -56,8 +56,8 @@ const ProjectDetail = () => {
           <Building2 className="mx-auto mb-4 h-16 w-16 text-muted-foreground/30" />
           <h1 className="font-display mb-2 text-2xl font-bold">Project Not Found</h1>
           <p className="mb-6 text-muted-foreground">This investment opportunity doesn't exist.</p>
-          <Link to="/" className="rounded gradient-gold px-6 py-2.5 text-sm font-semibold text-primary-foreground">
-            Back to Opportunities
+          <Link to="/" className="rounded gradient-blue px-6 py-2.5 text-sm font-semibold text-primary-foreground">
+            Back to Home
           </Link>
         </div>
       </div>
@@ -65,6 +65,11 @@ const ProjectDetail = () => {
   }
 
   const progress = Math.min((project.raisedAmount / project.targetRaise) * 100, 100);
+  const unit = project.individualInvestmentSize ?? project.minInvestment;
+  const totalSlots = Math.floor(project.targetRaise / unit);
+  const filledSlots = Math.floor(project.raisedAmount / unit);
+  const remainingSlots = Math.max(0, totalSlots - filledSlots);
+  const remainingAmount = Math.max(0, project.targetRaise - project.raisedAmount);
 
   return (
     <div className="min-h-screen bg-background">
@@ -82,7 +87,7 @@ const ProjectDetail = () => {
             className="mb-6 inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
           >
             <ArrowLeft className="h-4 w-4" />
-            Back to Opportunities
+            Back to Home
           </Link>
           <div className="flex flex-wrap items-end justify-between gap-4">
             <div>
@@ -95,7 +100,7 @@ const ProjectDetail = () => {
                 <span className="rounded-full bg-secondary/80 px-3 py-1 text-xs font-medium text-secondary-foreground">
                   {project.type}
                 </span>
-                <span className="rounded-full bg-gold/15 px-3 py-1 text-xs font-medium text-gold">
+                <span className="rounded-full bg-blue/15 px-3 py-1 text-xs font-medium text-blue">
                   {project.dealType}
                 </span>
               </div>
@@ -140,13 +145,31 @@ const ProjectDetail = () => {
               <p className="text-muted-foreground leading-relaxed">{project.longDescription}</p>
             </div>
 
+            {/* Documents */}
+            {project.documents && project.documents.length > 0 && (
+              <div className="rounded-xl border border-border bg-card p-6">
+                <h2 className="font-display mb-4 text-xl font-semibold text-foreground">Documents</h2>
+                <ul className="space-y-2">
+                  {project.documents.map((d, i) => (
+                    <li key={i} className="flex items-center justify-between gap-3">
+                      <div>
+                        <div className="text-sm text-foreground">{d.name}</div>
+                        <div className="text-xs text-muted-foreground">{d.type} · {(d.size/1024).toFixed(0)} KB</div>
+                      </div>
+                      <a href={d.dataUrl} download={d.name} className="text-sm text-blue">Download</a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
             {/* Highlights */}
             <div className="rounded-xl border border-border bg-card p-6">
               <h2 className="font-display mb-4 text-xl font-semibold text-foreground">Deal Highlights</h2>
               <ul className="space-y-3">
                 {project.highlights.map((highlight, i) => (
                   <li key={i} className="flex items-start gap-3">
-                    <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-gold" />
+                    <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-blue" />
                     <span className="text-sm text-muted-foreground leading-relaxed">{highlight}</span>
                   </li>
                 ))}
@@ -156,7 +179,7 @@ const ProjectDetail = () => {
             {/* Financials */}
             <div className="rounded-xl border border-border bg-card p-6">
               <h2 className="font-display mb-5 text-xl font-semibold text-foreground flex items-center gap-2">
-                <BarChart3 className="h-5 w-5 text-gold" />
+                <BarChart3 className="h-5 w-5 text-blue" />
                 Financial Summary
               </h2>
               <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
@@ -198,7 +221,7 @@ const ProjectDetail = () => {
             {/* Timeline */}
             <div className="rounded-xl border border-border bg-card p-6">
               <h2 className="font-display mb-5 text-xl font-semibold text-foreground flex items-center gap-2">
-                <Calendar className="h-5 w-5 text-gold" />
+                <Calendar className="h-5 w-5 text-blue" />
                 Investment Timeline
               </h2>
               <div className="relative">
@@ -206,12 +229,12 @@ const ProjectDetail = () => {
                 <div className="space-y-5">
                   {project.timeline.map((item, i) => (
                     <div key={i} className="relative flex items-center gap-4 pl-10">
-                      <div className="absolute left-0 flex h-8 w-8 items-center justify-center rounded-full border-2 border-gold/40 bg-background">
-                        <div className="h-2 w-2 rounded-full bg-gold" />
+                      <div className="absolute left-0 flex h-8 w-8 items-center justify-center rounded-full border-2 border-blue/40 bg-background">
+                        <div className="h-2 w-2 rounded-full bg-blue" />
                       </div>
                       <div className="flex flex-1 items-center justify-between rounded-lg bg-muted px-4 py-2.5">
                         <span className="text-sm font-medium text-foreground">{item.label}</span>
-                        <span className="text-sm text-gold font-semibold">{item.date}</span>
+                        <span className="text-sm text-blue font-semibold">{item.date}</span>
                       </div>
                     </div>
                   ))}
@@ -224,12 +247,12 @@ const ProjectDetail = () => {
           <div className="space-y-5">
             <div className="sticky top-24 space-y-5">
               {/* Invest Card */}
-              <div className="rounded-xl border border-gold/30 bg-card p-6 shadow-gold">
+              <div className="rounded-xl border border-blue/30 bg-card p-6 shadow-blue">
                 <h3 className="font-display mb-1 text-lg font-semibold text-foreground">
                   Invest in This Opportunity
                 </h3>
                 <p className="mb-5 text-sm text-muted-foreground">
-                  Minimum investment of ${project.minInvestment.toLocaleString()}
+                  Individual investment size: ${unit.toLocaleString()} • {remainingSlots} of {totalSlots} slots remaining ({`$${remainingAmount.toLocaleString()}`} left)
                 </p>
 
                 {/* Progress */}
@@ -245,7 +268,7 @@ const ProjectDetail = () => {
                     </div>
                     <div className="h-2 rounded-full bg-muted overflow-hidden">
                       <div
-                        className="h-full rounded-full gradient-gold transition-all"
+                        className="h-full rounded-full gradient-blue transition-all"
                         style={{ width: `${progress}%` }}
                       />
                     </div>
@@ -256,12 +279,25 @@ const ProjectDetail = () => {
                 )}
 
                 <button
+                  onClick={() => {
+                    // If investor, go to invest flow; otherwise prompt to sign in as investor
+                    const authRaw = localStorage.getItem("crest_auth_user");
+                    try {
+                      const parsed = authRaw ? JSON.parse(authRaw) : null;
+                      if (parsed && parsed.role === "investor") {
+                        window.location.href = `/invest/${project.id}`;
+                        return;
+                      }
+                    } catch {}
+                    // redirect to signin and let user pick investor role
+                    window.location.href = "/signin";
+                  }}
                   className={`w-full rounded py-3 text-base font-semibold transition-all ${
                     project.status === "Fully Funded"
                       ? "cursor-not-allowed bg-muted text-muted-foreground"
                       : project.status === "Coming Soon"
-                      ? "border border-gold/60 text-gold hover:bg-gold/10"
-                      : "gradient-gold text-primary-foreground shadow-gold hover:opacity-90"
+                      ? "border border-blue/60 text-blue hover:bg-blue/10"
+                      : "gradient-blue text-primary-foreground shadow-blue hover:opacity-90"
                   }`}
                   disabled={project.status === "Fully Funded"}
                 >
@@ -280,7 +316,7 @@ const ProjectDetail = () => {
               {/* Operator Card */}
               <div className="rounded-xl border border-border bg-card p-6">
                 <h3 className="font-display mb-4 text-base font-semibold text-foreground flex items-center gap-2">
-                  <Users className="h-4 w-4 text-gold" />
+                  <Users className="h-4 w-4 text-blue" />
                   Operator
                 </h3>
                 <div className="mb-3">
@@ -302,7 +338,7 @@ const ProjectDetail = () => {
                 <p className="text-xs text-muted-foreground leading-relaxed line-clamp-4">
                   {project.operator.bio}
                 </p>
-                <button className="mt-4 flex w-full items-center justify-center gap-1.5 text-xs text-gold hover:underline">
+                <button className="mt-4 flex w-full items-center justify-center gap-1.5 text-xs text-blue hover:underline">
                   View Full Profile <ExternalLink className="h-3 w-3" />
                 </button>
               </div>
@@ -330,17 +366,17 @@ const ProjectDetail = () => {
                 <Link
                   key={p.id}
                   to={`/project/${p.id}`}
-                  className="flex items-center gap-3 rounded-xl border border-border bg-background p-4 transition-all hover:border-gold/40 hover:bg-card group"
+                  className="flex items-center gap-3 rounded-xl border border-border bg-background p-4 transition-all hover:border-blue/40 hover:bg-card group"
                 >
                   <img src={p.image} alt={p.name} className="h-14 w-20 rounded-lg object-cover shrink-0" />
                   <div className="min-w-0 flex-1">
-                    <p className="text-sm font-semibold text-foreground group-hover:text-gold transition-colors line-clamp-1">
+                    <p className="text-sm font-semibold text-foreground group-hover:text-blue transition-colors line-clamp-1">
                       {p.name}
                     </p>
                     <p className="text-xs text-muted-foreground">{p.location}</p>
-                    <p className="mt-1 text-xs text-gold font-medium">{p.targetIRR}% Target IRR</p>
+                    <p className="mt-1 text-xs text-blue font-medium">{p.targetIRR}% Target IRR</p>
                   </div>
-                  <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground group-hover:text-gold transition-colors" />
+                  <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground group-hover:text-blue transition-colors" />
                 </Link>
               ))}
           </div>

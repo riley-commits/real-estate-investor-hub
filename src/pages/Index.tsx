@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Search, SlidersHorizontal, Building2, TrendingUp, Users, Shield } from "lucide-react";
 import Navbar from "@/components/Navbar";
@@ -23,6 +23,18 @@ const Index = () => {
   const [selectedType, setSelectedType] = useState<ProjectType | "All">("All");
   const [selectedDealType, setSelectedDealType] = useState<DealType | "All">("All");
   const [selectedStatus, setSelectedStatus] = useState<ProjectStatus | "All">("All");
+
+  // track authentication state so we can show/blur content
+  const [authed, setAuthed] = useState(false);
+  useEffect(() => {
+    // lazy import to avoid adding this dependency to SSR bundles
+    import("@/lib/auth").then(({ isAuthenticated }) => {
+      setAuthed(isAuthenticated());
+      const handler = () => setAuthed(isAuthenticated());
+      window.addEventListener("authChange", handler);
+      return () => window.removeEventListener("authChange", handler);
+    });
+  }, []);
 
   const filtered = projects.filter((p) => {
     const matchSearch =
@@ -50,15 +62,15 @@ const Index = () => {
         <div className="absolute inset-0 gradient-hero-overlay" />
 
         <div className="relative z-10 flex h-full flex-col items-center justify-center text-center px-6 pt-16">
-          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-gold/30 bg-gold/10 px-4 py-1.5">
-            <span className="h-1.5 w-1.5 rounded-full bg-gold animate-pulse" />
-            <span className="text-xs font-medium text-gold tracking-wide uppercase">
+          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-blue/30 bg-blue/10 px-4 py-1.5">
+            <span className="h-1.5 w-1.5 rounded-full bg-blue animate-pulse" />
+            <span className="text-xs font-medium text-blue tracking-wide uppercase">
               Institutional-Grade Real Estate
             </span>
           </div>
           <h1 className="font-display mb-4 text-5xl font-bold leading-tight text-foreground max-w-3xl">
             Invest in Premium{" "}
-            <span className="text-gold">Real Estate</span>{" "}
+            <span className="text-blue">Real Estate</span>{" "}
             Opportunities
           </h1>
           <p className="mb-8 text-lg text-muted-foreground max-w-xl leading-relaxed">
@@ -66,12 +78,9 @@ const Index = () => {
             Starting from $10,000.
           </p>
           <div className="flex gap-4">
-            <button className="rounded gradient-gold px-8 py-3 text-base font-semibold text-primary-foreground shadow-gold transition-opacity hover:opacity-90">
+            <a href="#opportunities" className="rounded bg-blue-600 px-8 py-3 text-base font-semibold text-white shadow transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400">
               Browse Opportunities
-            </button>
-            <button className="rounded border border-border px-8 py-3 text-base font-medium text-foreground transition-colors hover:bg-secondary">
-              How It Works
-            </button>
+            </a>
           </div>
         </div>
       </section>
@@ -81,7 +90,7 @@ const Index = () => {
         <div className="container mx-auto grid grid-cols-2 md:grid-cols-4 divide-x divide-border">
           {stats.map(({ icon: Icon, label, value }) => (
             <div key={label} className="flex flex-col items-center py-6 px-4 gap-1">
-              <Icon className="h-5 w-5 text-gold mb-1" />
+              <Icon className="h-5 w-5 text-blue mb-1" />
               <span className="font-display text-2xl font-bold text-foreground">{value}</span>
               <span className="text-xs text-muted-foreground">{label}</span>
             </div>
@@ -90,7 +99,7 @@ const Index = () => {
       </section>
 
       {/* Browse Section */}
-      <section className="container mx-auto px-6 py-14">
+      <section id="opportunities" className="container mx-auto px-6 py-14">
         <div className="mb-8">
           <h2 className="font-display mb-2 text-3xl font-bold text-foreground">
             Current Opportunities
@@ -100,8 +109,11 @@ const Index = () => {
           </p>
         </div>
 
-        {/* Search + Filters */}
-        <div className="mb-8 space-y-4">
+        {/* wrap everything in a relative container so we can overlay if not authed */}
+        <div className="relative">
+          <div className={`${!authed ? "blur-sm pointer-events-none" : ""}`}> 
+            {/* Search + Filters */}
+            <div className="mb-8 space-y-4">
           <div className="relative max-w-md">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <input
@@ -109,7 +121,7 @@ const Index = () => {
               placeholder="Search by name, location, or operator..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full rounded-lg border border-border bg-card pl-10 pr-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-gold/50 focus:border-gold/50"
+              className="w-full rounded-lg border border-border bg-card pl-10 pr-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-blue/50 focus:border-blue/50"
             />
           </div>
 
@@ -127,8 +139,8 @@ const Index = () => {
                   onClick={() => setSelectedType(t)}
                   className={`rounded-full px-3 py-1 text-xs font-medium transition-all ${
                     selectedType === t
-                      ? "gradient-gold text-primary-foreground"
-                      : "border border-border bg-card text-muted-foreground hover:text-foreground hover:border-gold/40"
+                      ? "gradient-blue text-primary-foreground"
+                      : "border border-border bg-card text-muted-foreground hover:text-foreground hover:border-blue/40"
                   }`}
                 >
                   {t}
@@ -146,8 +158,8 @@ const Index = () => {
                   onClick={() => setSelectedDealType(t)}
                   className={`rounded-full px-3 py-1 text-xs font-medium transition-all ${
                     selectedDealType === t
-                      ? "gradient-gold text-primary-foreground"
-                      : "border border-border bg-card text-muted-foreground hover:text-foreground hover:border-gold/40"
+                      ? "gradient-blue text-primary-foreground"
+                      : "border border-border bg-card text-muted-foreground hover:text-foreground hover:border-blue/40"
                   }`}
                 >
                   {t}
@@ -165,8 +177,8 @@ const Index = () => {
                   onClick={() => setSelectedStatus(t)}
                   className={`rounded-full px-3 py-1 text-xs font-medium transition-all ${
                     selectedStatus === t
-                      ? "gradient-gold text-primary-foreground"
-                      : "border border-border bg-card text-muted-foreground hover:text-foreground hover:border-gold/40"
+                      ? "gradient-blue text-primary-foreground"
+                      : "border border-border bg-card text-muted-foreground hover:text-foreground hover:border-blue/40"
                   }`}
                 >
                   {t}
@@ -195,6 +207,28 @@ const Index = () => {
             <p className="text-muted-foreground">Try adjusting your filters or search query.</p>
           </div>
         )}
+        {/* end blurred container */}
+          </div>
+
+          {/* overlay shown when not authenticated */}
+          {!authed && (
+            <div className="absolute inset-0 flex flex-col items-center justify-center bg-background/80">
+              <p className="mb-4 text-lg font-semibold text-foreground">
+                <span>Please </span>
+                <Link to="/signin" className="text-blue underline">
+                  sign in
+                </Link>
+                <span> to view opportunities.</span>
+              </p>
+              <Link
+                to="/signin"
+                className="rounded bg-blue-600 px-6 py-2 text-white shadow hover:bg-blue-700"
+              >
+                Sign In
+              </Link>
+            </div>
+          )}
+        </div>
       </section>
 
       {/* CTA Section */}
@@ -207,8 +241,8 @@ const Index = () => {
             List your investment opportunity on CrestCapital and connect with thousands of accredited investors.
           </p>
           <Link
-            to="/auth"
-            className="rounded gradient-gold px-8 py-3 text-base font-semibold text-primary-foreground shadow-gold transition-opacity hover:opacity-90 inline-block"
+            to="/for-operators"
+            className="rounded gradient-blue px-8 py-3 text-base font-semibold text-primary-foreground shadow-blue transition-opacity hover:opacity-90 inline-block"
           >
             Submit Your Deal
           </Link>

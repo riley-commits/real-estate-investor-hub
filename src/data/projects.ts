@@ -23,6 +23,8 @@ export interface Project {
   equityMultiple: number;
   holdPeriod: string;
   minInvestment: number;
+  /** The individual investment size (slot size) operators can set. If present, investments must be multiples of this value. */
+  individualInvestmentSize?: number;
   targetRaise: number;
   raisedAmount: number;
   description: string;
@@ -43,6 +45,7 @@ export interface Project {
     bio: string;
   };
   timeline: { label: string; date: string }[];
+  documents?: { name: string; type: string; size: number; dataUrl: string }[];
 }
 
 export const projects: Project[] = [
@@ -329,3 +332,14 @@ export const projects: Project[] = [
     ],
   },
 ];
+
+export function addProject(p: Project) {
+  projects.push(p);
+}
+
+export function updateProject(id: string, patch: Partial<Project>) {
+  const idx = projects.findIndex((x) => x.id === id);
+  if (idx === -1) return false;
+  projects[idx] = { ...projects[idx], ...patch };
+  return true;
+}

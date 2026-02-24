@@ -23,10 +23,10 @@ export default {
         ring: "hsl(var(--ring))",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
-        gold: {
-          DEFAULT: "hsl(var(--gold))",
-          muted: "hsl(var(--gold-muted))",
-          subtle: "hsl(var(--gold-subtle))",
+        blue: {
+          DEFAULT: "hsl(var(--blue))",
+          muted: "hsl(var(--blue-muted))",
+          subtle: "hsl(var(--blue-subtle))",
         },
         surface: {
           elevated: "hsl(var(--surface-elevated))",
