@@ -4,7 +4,7 @@ import {
   ChartPie,
   Users,
   Shield,
-  QuestionMarkCircle,
+  HelpCircle,
 } from "lucide-react";
 import {
   Accordion,
@@ -107,7 +107,7 @@ const ForInvestors = () => {
           <Accordion type="single" collapsible>
             <AccordionItem value="q1">
               <AccordionTrigger>
-                <QuestionMarkCircle className="mr-2 h-4 w-4" />
+                <HelpCircle className="mr-2 h-4 w-4" />
                 What is the minimum investment?
               </AccordionTrigger>
               <AccordionContent>
@@ -117,7 +117,7 @@ const ForInvestors = () => {
             </AccordionItem>
             <AccordionItem value="q2">
               <AccordionTrigger>
-                <QuestionMarkCircle className="mr-2 h-4 w-4" />
+                <HelpCircle className="mr-2 h-4 w-4" />
                 How do I know the deals are legitimate?
               </AccordionTrigger>
               <AccordionContent>
@@ -128,7 +128,7 @@ const ForInvestors = () => {
             </AccordionItem>
             <AccordionItem value="q3">
               <AccordionTrigger>
-                <QuestionMarkCircle className="mr-2 h-4 w-4" />
+                <HelpCircle className="mr-2 h-4 w-4" />
                 Can I track my portfolio performance?
               </AccordionTrigger>
               <AccordionContent>
